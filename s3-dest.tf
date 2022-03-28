@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "dest_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "dest" {
-  count    = var.create_dest_bucket == "true" ? 1 : 0
+  #count    = var.create_dest_bucket == "true" ? 1 : 0
   provider = aws.dest
   bucket   = var.dest_bucket_name
   #region   = var.dest_region
@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "dest" {
 
 }
 resource "aws_s3_bucket_versioning" "dest" {
-  bucket = aws_s3_bucket.dest[count.index].id
+  bucket = aws_s3_bucket.dest.id
   versioning_configuration {
     status = var.versioning_enable
   }
