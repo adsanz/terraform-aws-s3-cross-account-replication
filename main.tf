@@ -1,5 +1,6 @@
 # MAIN
 provider "aws" {
+  alias  = "dest"
   region = "us-west-1"
 }
 
