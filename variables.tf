@@ -36,7 +36,6 @@ variable "replication_name" {
 }
 
 variable "versioning_enable" {
-  type        = "bool"
   description = "To enable or disable versioning"
   default = false
 }

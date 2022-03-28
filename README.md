@@ -47,9 +47,9 @@ module "s3-cross-account-replication" {
   dest_region        = "us-east-1"
   replication_name   = "my-replication-name"
 
-  providers {
-    "aws.source" = "aws.source"
-    "aws.dest"   = "aws.dest"
+  providers = {
+    aws.source = "aws.source"
+    aws.dest   = "aws.dest"
   }
 }
 
