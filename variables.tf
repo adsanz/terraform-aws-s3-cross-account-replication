@@ -25,6 +25,11 @@ variable "versioning_enable" {
 }
 
 variable "replication_policy_name" {
+  description = "Policy name used for replication"
+  default = "Enabled"
+}
+
+variable "replication_role_name" {
   description = "Role name used for replication"
   default = "Enabled"
 }
