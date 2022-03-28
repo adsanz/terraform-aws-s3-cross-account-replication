@@ -32,6 +32,6 @@ resource "aws_s3_bucket" "dest" {
   policy   = "${data.aws_iam_policy_document.dest_bucket_policy.json}"
 
   versioning {
-    enabled = true
+    enabled = var.versioning_enable
   }
 }

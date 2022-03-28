@@ -75,7 +75,7 @@ resource "aws_s3_bucket" "source" {
   region   = "${var.source_region}"
 
   versioning {
-    enabled = true
+    enabled = var.versioning_enable
   }
 
   replication_configuration {

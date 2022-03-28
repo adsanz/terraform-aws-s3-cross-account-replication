@@ -10,6 +10,7 @@ Terraform Module for managing s3 bucket cross-account cross-region replication.
 - `dest_bucket_name`   - Name for the destination bucket (optionally created by this module)
 - `dest_region`        - Region for the destination bucket
 - `replication_name`   - Short name for this replication (used in IAM roles and source bucket configuration)
+- `versioning_enable`   - Boolean to define if versioning is enabled. False by default
 
 - Terraform 0.11 module provider inheritance block:
 

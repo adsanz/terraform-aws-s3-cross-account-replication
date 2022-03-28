@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "source_write" {
 
 resource "aws_iam_policy" "source_write" {
   provider    = "aws.source"
-  name_prefix = "${local.replication_name}-source-write-"
+  name_prefix = "${local.replication_name}-source-write-policy"
   policy      = "${data.aws_iam_policy_document.source_write.json}"
 }
 

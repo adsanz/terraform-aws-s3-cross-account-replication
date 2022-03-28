@@ -34,3 +34,9 @@ variable "replication_name" {
   type        = "string"
   description = "Short name to describe this replication"
 }
+
+variable "versioning_enable" {
+  type        = "bool"
+  description = "To enable or disable versioning"
+  default = false
+}
