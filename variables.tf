@@ -1,16 +1,4 @@
-variable "source_region" {
-  type        = string
-  description = "AWS region for the source bucket"
-  default     = "us-west-2"
-}
-
-variable "dest_region" {
-  type        = string
-  description = "AWS region for the destination bucket"
-  default     = "us-west-1"
-}
-
-variable "source_bucket_name" {
+variable "bucket_source_name" {
   type        = string
   description = "Name for source s3 bucket"
 }
@@ -39,5 +27,5 @@ variable "replication_name" {
 
 variable "versioning_enable" {
   description = "To enable or disable versioning"
-  default = false
+  default = "Enabled"
 }

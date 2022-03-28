@@ -1,79 +1,22 @@
-# S3 source IAM and bucket
-
-# S3 source IAM
-
-data "aws_iam_policy_document" "source_replication_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["s3.amazonaws.com"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "source_replication_policy" {
-  statement {
-    actions = [
-      "s3:GetReplicationConfiguration",
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      local.source_bucket_arn,
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:GetObjectVersionForReplication",
-      "s3:GetObjectVersionAcl",
-    ]
-
-    resources = [
-      local.source_bucket_object_arn,
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:ReplicateObject",
-      "s3:ReplicateDelete",
-      "s3:ObjectOwnerOverrideToBucketOwner",
-    ]
-
-    resources = [
-      local.dest_bucket_object_arn,
-    ]
-  }
-}
-
-resource "aws_iam_role" "source_replication" {
-  provider           = aws.source
-  name               = "${local.replication_name}-replication-role"
-  assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
-}
-
-resource "aws_iam_policy" "source_replication" {
-  provider = aws.source
-  name     = "${local.replication_name}-replication-policy"
-  policy   = data.aws_iam_policy_document.source_replication_policy.json
-}
-
-resource "aws_iam_role_policy_attachment" "source_replication" {
-  provider   = aws.source
-  role       = aws_iam_role.source_replication.name
-  policy_arn = aws_iam_policy.source_replication.arn
-}
-
-# S3 source bucket
-
 resource "aws_s3_bucket" "source" {
   provider = aws.source
-  bucket   = var.source_bucket_name
-  #region   = var.source_region
+  bucket   = var.bucket_source_name
+}
 
+resource "aws_s3_bucket_acl" "source_bucket_acl" {
+  provider = aws.source
+
+  bucket = aws_s3_bucket.source.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "source" {
+  provider = aws.source
+
+  bucket = aws_s3_bucket.source.id
+  versioning_configuration {
+    status = var.versioning_enable
+  }
 }
 
 resource "aws_s3_bucket_replication_configuration" "replication" {
@@ -81,11 +24,11 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
   # Must have bucket versioning enabled first
   depends_on = [aws_s3_bucket_versioning.source]
 
-  role   = aws_iam_role.source_replication.arn
+  role   = aws_iam_role.replication.arn
   bucket = aws_s3_bucket.source.id
 
   rule {
-    id = local.replication_name
+    id = var.replication_name
 
     filter {
       prefix = var.replicate_prefix
@@ -94,15 +37,8 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
     status = "Enabled"
 
     destination {
-      bucket        = local.dest_bucket_arn
+      bucket        = aws_s3_bucket.destination.arn
       storage_class = "STANDARD"
     }
-  }
-}
-
-resource "aws_s3_bucket_versioning" "source" {
-  bucket = aws_s3_bucket.source.id
-  versioning_configuration {
-    status = var.versioning_enable
   }
 }

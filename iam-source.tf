@@ -1,44 +1,66 @@
-data "aws_iam_policy_document" "source_write" {
-  statement {
-    actions = [
-      "s3:PutObject",
-    ]
+resource "aws_iam_role" "replication" {
+  name = var.replication_role_name
 
-    resources = [
-      local.source_bucket_object_arn,
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      local.source_bucket_arn,
-    ]
-  }
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+POLICY
 }
 
-resource "aws_iam_policy" "source_write" {
-  provider    = aws.source
-  name_prefix = "${local.replication_name}-source-write-policy"
-  policy      = data.aws_iam_policy_document.source_write.json
+resource "aws_iam_policy" "replication" {
+  name = var.replication_policy_name
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.source.arn}"
+      ]
+    },
+    {
+      "Action": [
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionAcl",
+         "s3:GetObjectVersionTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "${aws_s3_bucket.source.arn}/*"
+      ]
+    },
+    {
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_s3_bucket.destination.arn}/*"
+    }
+  ]
+}
+POLICY
 }
 
-resource "aws_iam_user" "source_write" {
-  provider      = aws.source
-  name          = "${local.replication_name}-source-write-user"
-  force_destroy = true
-}
-
-resource "aws_iam_user_policy_attachment" "source_write" {
-  provider   = aws.source
-  user       = aws_iam_user.source_write.name
-  policy_arn = aws_iam_policy.source_write.arn
-}
-
-resource "aws_iam_access_key" "source_write" {
-  provider = aws.source
-  user     = aws_iam_user.source_write.name
+resource "aws_iam_role_policy_attachment" "replication" {
+  role       = aws_iam_role.replication.name
+  policy_arn = aws_iam_policy.replication.arn
 }
