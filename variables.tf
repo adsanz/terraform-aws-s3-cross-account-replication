@@ -23,3 +23,8 @@ variable "versioning_enable" {
   description = "To enable or disable versioning"
   default = "Enabled"
 }
+
+variable "replication_policy_name" {
+  description = "Role name used for replication"
+  default = "Enabled"
+}
