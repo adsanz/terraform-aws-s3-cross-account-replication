@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "dest" {
 
 }
 resource "aws_s3_bucket_versioning" "dest" {
-  bucket = aws_s3_bucket.dest.id
+  bucket = aws_s3_bucket.dest.[count.index].id
   versioning_configuration {
     status = var.versioning_enable
   }
