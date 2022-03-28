@@ -48,8 +48,8 @@ module "s3-cross-account-replication" {
   replication_name   = "my-replication-name"
 
   providers = {
-    aws.source = "aws.source"
-    aws.dest   = "aws.dest"
+    aws.source = aws.source
+    aws.dest   = aws.dest
   }
 }
 
