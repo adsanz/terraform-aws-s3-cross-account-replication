@@ -1,5 +1,6 @@
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3-dest" {
+  provider = aws.dest
   bucket = aws_s3_bucket.destination.bucket
 
   rule {
@@ -12,6 +13,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3-dest" {
 
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3-source" {
+  provider = aws.source
   bucket = aws_s3_bucket.source.bucket
 
   rule {

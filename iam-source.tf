@@ -1,4 +1,5 @@
 resource "aws_iam_role" "replication" {
+  provider = aws.source
   name = var.replication_role_name
 
   assume_role_policy = <<POLICY
@@ -19,6 +20,7 @@ POLICY
 }
 
 resource "aws_iam_policy" "replication" {
+  provider = aws.source
   name = var.replication_policy_name
 
   policy = <<POLICY
@@ -61,6 +63,7 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "replication" {
+  provider = aws.source
   role       = aws_iam_role.replication.name
   policy_arn = aws_iam_policy.replication.arn
 }
