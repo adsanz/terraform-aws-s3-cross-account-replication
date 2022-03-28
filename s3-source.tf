@@ -72,10 +72,9 @@ resource "aws_iam_role_policy_attachment" "source_replication" {
 resource "aws_s3_bucket" "source" {
   provider = aws.source
   bucket   = var.source_bucket_name
-  region   = var.source_region
+  #region   = var.source_region
 
 }
-
 
 resource "aws_s3_bucket_replication_configuration" "replication" {
   provider = aws.source
