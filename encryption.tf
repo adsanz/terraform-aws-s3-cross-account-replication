@@ -1,6 +1,6 @@
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3-dest" {
-  bucket = aws_s3_bucket.mybucket.dest
+  bucket = aws_s3_bucket.dest.bucket
 
   rule {
     apply_server_side_encryption_by_default {
@@ -12,7 +12,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3-dest" {
 
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3-source" {
-  bucket = aws_s3_bucket.mybucket.source
+  bucket = aws_s3_bucket.source.bucket
 
   rule {
     apply_server_side_encryption_by_default {
