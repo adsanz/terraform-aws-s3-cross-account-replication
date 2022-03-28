@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "source_replication_policy" {
     ]
 
     resources = [
-      "${local.source_bucket_arn}",
+      local.source_bucket_arn,
     ]
   }
 
@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "source_replication_policy" {
     ]
 
     resources = [
-      "${local.source_bucket_object_arn}",
+      local.source_bucket_object_arn,
     ]
   }
 
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "source_replication_policy" {
     ]
 
     resources = [
-      "${local.dest_bucket_object_arn}",
+      local.dest_bucket_object_arn,
     ]
   }
 }
@@ -52,49 +52,49 @@ data "aws_iam_policy_document" "source_replication_policy" {
 resource "aws_iam_role" "source_replication" {
   provider           = "aws.source"
   name               = "${local.replication_name}-replication-role"
-  assume_role_policy = "${data.aws_iam_policy_document.source_replication_role.json}"
+  assume_role_policy = data.aws_iam_policy_document.source_replication_role.json
 }
 
 resource "aws_iam_policy" "source_replication" {
   provider = "aws.source"
   name     = "${local.replication_name}-replication-policy"
-  policy   = "${data.aws_iam_policy_document.source_replication_policy.json}"
+  policy   = data.aws_iam_policy_document.source_replication_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "source_replication" {
   provider   = "aws.source"
-  role       = "${aws_iam_role.source_replication.name}"
-  policy_arn = "${aws_iam_policy.source_replication.arn}"
+  role       = aws_iam_role.source_replication.name
+  policy_arn = aws_iam_policy.source_replication.arn
 }
 
 # S3 source bucket
 
 resource "aws_s3_bucket" "source" {
   provider = "aws.source"
-  bucket   = "${var.source_bucket_name}"
-  region   = "${var.source_region}"
+  bucket   = var.source_bucket_name
+  region   = var.source_region
 
   versioning {
     enabled = var.versioning_enable
   }
 
   replication_configuration {
-    role = "${aws_iam_role.source_replication.arn}"
+    role = aws_iam_role.source_replication.arn
 
     rules {
-      id     = "${local.replication_name}"
+      id     = local.replication_name
       status = "Enabled"
-      prefix = "${var.replicate_prefix}"
+      prefix = var.replicate_prefix
 
       destination {
-        bucket        = "${local.dest_bucket_arn}"
+        bucket        = local.dest_bucket_arn
         storage_class = "STANDARD"
 
         access_control_translation {
           owner = "Destination"
         }
 
-        account_id = "${data.aws_caller_identity.dest.account_id}"
+        account_id = data.aws_caller_identity.dest.account_id
       }
     }
   }
