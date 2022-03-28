@@ -74,24 +74,29 @@ resource "aws_s3_bucket" "source" {
   bucket   = var.source_bucket_name
   region   = var.source_region
 
-  replication_configuration {
-    role = aws_iam_role.source_replication.arn
+}
 
-    rules {
-      id     = local.replication_name
-      status = "Enabled"
+
+resource "aws_s3_bucket_replication_configuration" "replication" {
+  provider = aws.source
+  # Must have bucket versioning enabled first
+  depends_on = [aws_s3_bucket_versioning.source]
+
+  role   = aws_iam_role.source_replication.arn
+  bucket = aws_s3_bucket.source.id
+
+  rule {
+    id = local.replication_name
+
+    filter {
       prefix = var.replicate_prefix
+    }
 
-      destination {
-        bucket        = local.dest_bucket_arn
-        storage_class = "STANDARD"
+    status = "Enabled"
 
-        access_control_translation {
-          owner = "Destination"
-        }
-
-        account_id = data.aws_caller_identity.dest.account_id
-      }
+    destination {
+      bucket        = local.dest_bucket_arn
+      storage_class = "STANDARD"
     }
   }
 }
