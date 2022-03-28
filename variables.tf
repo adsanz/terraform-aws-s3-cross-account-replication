@@ -19,6 +19,11 @@ variable "replication_name" {
   description = "Short name to describe this replication"
 }
 
+variable "replication_prefix" {
+  type        = string
+  description = "Prefix to replicate, default \"\" for all objects. Note if specifying, must end in a /"
+}
+
 variable "versioning_enable" {
   description = "To enable or disable versioning"
   default = "Enabled"
