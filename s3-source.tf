@@ -74,10 +74,6 @@ resource "aws_s3_bucket" "source" {
   bucket   = var.source_bucket_name
   region   = var.source_region
 
-  versioning {
-    enabled = var.versioning_enable
-  }
-
   replication_configuration {
     role = aws_iam_role.source_replication.arn
 
@@ -97,5 +93,12 @@ resource "aws_s3_bucket" "source" {
         account_id = data.aws_caller_identity.dest.account_id
       }
     }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "source" {
+  bucket = aws_s3_bucket.source.id
+  versioning_configuration {
+    status = var.versioning_enable
   }
 }

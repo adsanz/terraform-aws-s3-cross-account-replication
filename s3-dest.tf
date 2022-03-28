@@ -31,7 +31,10 @@ resource "aws_s3_bucket" "dest" {
   region   = var.dest_region
   policy   = "${data.aws_iam_policy_document.dest_bucket_policy.json}"
 
-  versioning {
-    enabled = var.versioning_enable
+}
+resource "aws_s3_bucket_versioning" "dest" {
+  bucket = aws_s3_bucket.dest.id
+  versioning_configuration {
+    status = var.versioning_enable
   }
 }
