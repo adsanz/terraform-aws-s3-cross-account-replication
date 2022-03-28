@@ -40,7 +40,7 @@ provider "aws" {
 }
 
 module "s3-cross-account-replication" {
-  source             = "github.com/asicsdigital/terraform-aws-s3-cross-account-replication?ref=v1.0.0"
+  source             = "github.com/adsanz/terraform-aws-s3-cross-account-replication?ref=v2.0.1"
   source_bucket_name = "source-bucket"
   source_region      = "us-west-1"
   dest_bucket_name   = "dest-bucket"
