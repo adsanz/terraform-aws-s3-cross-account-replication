@@ -36,3 +36,24 @@ variable "replication_policy_name" {
 variable "replication_role_name" {
   description = "Role name used for replication"
 }
+
+variable "transition_to_ia" {
+  description = "Days until transition to IA STANDARD storage class"
+  default = 1
+}
+
+variable "transition_to_glacier" {
+  description = "Days until transition to GLACIER storage class"
+  default = 10
+}
+
+variable "source_lifecycle_name" {
+  description = "ID for lifecycle config"
+  default = "source-lifecycle"
+}
+
+variable "destination_storage_class" {
+  description = "Destination storage class"
+  default = "GLACIER"
+}
+

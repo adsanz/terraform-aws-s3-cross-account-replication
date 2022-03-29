@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "source" {
   provider = aws.source
   bucket   = var.bucket_source_name
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_acl" "source_bucket_acl" {
@@ -48,10 +49,27 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
 
     destination {
       bucket        = aws_s3_bucket.destination.arn
-      storage_class = "GLACIER"
+      storage_class = var.destination_storage_class
       encryption_configuration {
-        replica_kms_key_id = aws_kms_key.dest-kms-key.id
+        replica_kms_key_id = aws_kms_key.dest-kms-key.arn
       }
+    }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "lifecycle-config" {
+  bucket = aws_s3_bucket.source.bucket
+
+  rule {
+    id = var.source_lifecycle_name
+    status = "Enabled"
+    transition {
+      days          = var.transition_to_ia
+      storage_class = "STANDARD_IA"
+    }
+    transition {
+      days          = var.transition_to_glacier
+      storage_class = "GLACIER"
     }
   }
 }
