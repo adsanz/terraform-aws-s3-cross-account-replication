@@ -57,3 +57,10 @@ variable "destination_storage_class" {
   default = "GLACIER"
 }
 
+variable "source_region" {
+  description = "Source region"
+}
+
+variable "dest_region" {
+  description = "Destination region"
+}

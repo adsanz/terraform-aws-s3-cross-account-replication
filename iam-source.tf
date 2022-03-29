@@ -66,6 +66,7 @@ resource "aws_iam_policy" "replication" {
       ],
 			"Condition": {
 				"StringLike": {
+          "kms:ViaService": "s3.${var.source_region}.amazonaws.com",
 					"kms:EncryptionContext:aws:s3:arn": "arn:aws:s3:::${var.bucket_source_name}/*"
 				}
 			}
@@ -76,6 +77,7 @@ resource "aws_iam_policy" "replication" {
 			"Resource": "${aws_kms_key.dest-kms-key.arn}",
 			"Condition": {
 				"StringLike": {
+          "kms:ViaService": "s3.${var.dest_region}.amazonaws.com",
 					"kms:EncryptionContext:aws:s3:arn": "arn:aws:s3:::${var.bucket_dest_name}/*"
 				}
 			}

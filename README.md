@@ -1,18 +1,29 @@
-# terraform-aws-s3-cross-account-replication
-Terraform Module for managing s3 bucket cross-account cross-region replication.
-
+# terraform-aws-s3-cross-region-replication
+Terraform Module for managing s3 bucket cross-region replication.
 ----------------------
 
-#### Required
+## What this module does
+Set-up 2 buckets with replication with:
+- Versioning enabled (required for replication)
+- Lifecycle set-up by default with 30 days for STANDARD_IA and 90 days for GLACIER (for the replication, storage class is already GLACIER)
+- Encryption with KMS keys
+- Both buckets will be private by default
 
-All variables set-up on variables.tf are required!. `versioning_enable` is set to "Enabled" by default since is required. 
 
-- Terraform 1.0 module provider inheritance block:
+
+## Required
+
+- AWS provider >= 4.8
+- Terraform 1.1.7 module provider inheritance block:
 
 - `aws.source` - AWS provider alias for source account
 - `aws.dest`   - AWS provider alias for destination account
 
-Usage
+### Variables
+
+You can see description of each variable on `variables.tf` file. The ones that does not have a default value, are required. 
+
+### Usage (with all required variables)
 -----
 
 ```hcl
@@ -26,6 +37,8 @@ module "s3-cross-account-replication" {
   replication_policy_name = var.replication_policy_name
   replication_role_name = var.replication_role_name
   replication_prefix = var.replication_prefix
+  source_region = var.source_region
+  dest_region = var.dest_region
 
   providers = {
     aws.source = aws.source
@@ -35,14 +48,14 @@ module "s3-cross-account-replication" {
 provider "aws" {
   alias  = "source"
   region = "us-west-2"
-  profile = "leo"
+  profile = "your-profile"
 }
 
 
 provider "aws" {
   alias  = "dest"
   region = "us-west-1"
-  profile = "leo"
+  profile = "your-profile"
 }
 
 

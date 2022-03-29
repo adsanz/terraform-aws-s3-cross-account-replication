@@ -29,8 +29,8 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
   bucket = aws_s3_bucket.source.id
 
   rule {
-      id = var.replication_name
-      delete_marker_replication {
+    id = var.replication_name
+    delete_marker_replication {
         status = "Enabled"
       }
     source_selection_criteria {
