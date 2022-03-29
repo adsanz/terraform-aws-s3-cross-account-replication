@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "destination" {
   provider = aws.dest
   bucket = var.bucket_dest_name
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_versioning" "destination" {

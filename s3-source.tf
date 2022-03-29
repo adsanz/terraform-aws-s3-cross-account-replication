@@ -28,8 +28,18 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
   bucket = aws_s3_bucket.source.id
 
   rule {
-    id = var.replication_name
-
+      id = var.replication_name
+      delete_marker_replication {
+        status = "Enabled"
+      }
+    source_selection_criteria {
+      replica_modifications {
+        status = "Enabled"
+      }
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
+    }
     filter {
       prefix = var.replicate_prefix
     }
@@ -38,7 +48,10 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
 
     destination {
       bucket        = aws_s3_bucket.destination.arn
-      storage_class = "STANDARD"
+      storage_class = "GLACIER"
+      encryption_configuration {
+        replica_kms_key_id = aws_kms_key.dest-kms-key.id
+      }
     }
   }
 }
