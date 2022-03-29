@@ -58,6 +58,7 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "lifecycle-config" {
+  provider = aws.source
   bucket = aws_s3_bucket.source.bucket
 
   rule {
