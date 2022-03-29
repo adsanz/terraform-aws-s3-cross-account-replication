@@ -29,7 +29,7 @@ You can see description of each variable on `variables.tf` file. The ones that d
 ```hcl
 
 module "s3-cross-account-replication" {
-  source             = "github.com/adsanz/terraform-aws-s3-cross-account-replication?ref=master"
+  source             = "github.com/adsanz/terraform-aws-s3-cross-account-replication?ref=1.0.0"
   bucket_source_name = var.bucket_source_name
   bucket_dest_name   = var.bucket_dest_name
   replication_name   = var.replication_name
